@@ -134,7 +134,6 @@ pub fn part_one(input: &str) -> Option<u32> {
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-
     // check if index is a number.
     // if it is, return the number and the indices used
     // otherwise, return None

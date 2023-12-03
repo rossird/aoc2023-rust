@@ -14,23 +14,36 @@ impl From<&str> for Set {
             let n = parts[0].parse::<u32>().unwrap();
             let color = parts[1];
             match color {
-                 "red" => s.red = n,
-                 "blue" => s.blue = n,
-                 "green" => s.green = n,
-                 _ => println!("unrecognized color: {}", color)
+                "red" => s.red = n,
+                "blue" => s.blue = n,
+                "green" => s.green = n,
+                _ => println!("unrecognized color: {}", color),
             }
         }
-        return s
+        return s;
     }
 }
 
 pub fn part_one(input: &str) -> Option<u32> {
     let mut r = 0u32;
     input.lines().for_each(|l| {
-        let parts =  l.split(":").collect::<Vec<_>>();
-        let n = parts[0].chars().skip(5).collect::<String>().parse::<u32>().unwrap();
-        let sets = parts[1].split(";").collect::<Vec<_>>().into_iter().map(|s| Set::from(s.trim())).collect::<Vec<Set>>();
-        if sets.iter().all(|s| s.red <= 12 && s.green <= 13 && s.blue <= 14) {
+        let parts = l.split(":").collect::<Vec<_>>();
+        let n = parts[0]
+            .chars()
+            .skip(5)
+            .collect::<String>()
+            .parse::<u32>()
+            .unwrap();
+        let sets = parts[1]
+            .split(";")
+            .collect::<Vec<_>>()
+            .into_iter()
+            .map(|s| Set::from(s.trim()))
+            .collect::<Vec<Set>>();
+        if sets
+            .iter()
+            .all(|s| s.red <= 12 && s.green <= 13 && s.blue <= 14)
+        {
             r += n;
         }
     });
@@ -41,13 +54,23 @@ pub fn part_two(input: &str) -> Option<u32> {
     let mut r = 0u32;
     input.lines().for_each(|l| {
         let mut min_s: Set = Default::default();
-        let parts =  l.split(":").collect::<Vec<_>>();
-        let n = parts[0].chars().skip(5).collect::<String>().parse::<u32>().unwrap();
-        let sets = parts[1].split(";").collect::<Vec<_>>().into_iter().map(|s| Set::from(s.trim())).collect::<Vec<Set>>();
+        let parts = l.split(":").collect::<Vec<_>>();
+        let n = parts[0]
+            .chars()
+            .skip(5)
+            .collect::<String>()
+            .parse::<u32>()
+            .unwrap();
+        let sets = parts[1]
+            .split(";")
+            .collect::<Vec<_>>()
+            .into_iter()
+            .map(|s| Set::from(s.trim()))
+            .collect::<Vec<Set>>();
         for s in sets {
-            min_s.red = std::cmp::max(min_s.red,  s.red);
-            min_s.blue = std::cmp::max(min_s.blue,  s.blue);
-            min_s.green = std::cmp::max(min_s.green,  s.green);
+            min_s.red = std::cmp::max(min_s.red, s.red);
+            min_s.blue = std::cmp::max(min_s.blue, s.blue);
+            min_s.green = std::cmp::max(min_s.green, s.green);
         }
         r += min_s.red * min_s.blue * min_s.green;
     });
