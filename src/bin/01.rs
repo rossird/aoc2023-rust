@@ -1,18 +1,17 @@
 advent_of_code::solution!(1);
 
+const RADIX: u32 = 10;
+
 pub fn part_one(input: &str) -> Option<u32> {
-    const RADIX: u32 = 10;
-    let mut s = 0;
-    input.lines().for_each(|l| {
+    Some(input.lines().fold(0_u32, |acc, l| {
         let mut v = vec![];
         for c in l.chars() {
-            if c.is_digit(RADIX) {
-                v.push(c.to_digit(RADIX).unwrap());
+            if let Some(digit) = c.to_digit(RADIX) {
+                v.push(digit);
             }
         }
-        s += v[0] * 10 + v.last().unwrap();
-    });
-    Some(s)
+        acc + v.first().unwrap() * 10 + v.last().unwrap()
+    }))
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
@@ -20,39 +19,34 @@ pub fn part_two(input: &str) -> Option<u32> {
     let mut s = 0;
     input.lines().for_each(|l| {
         let mut v = vec![];
-        for (i, c) in l.chars().enumerate() {
-            if c.is_digit(RADIX) {
-                v.push(c.to_digit(RADIX).unwrap());
+        let mut iter = l.chars().enumerate();
+        while let Some((i, c)) = iter.next() {
+            if let Some(digit) = c.to_digit(RADIX) {
+                v.push(digit);
+                continue;
             }
-            if l.chars().skip(i).take(3).collect::<String>() == "one" {
-                v.push(1);
-            }
-            if l.chars().skip(i).take(3).collect::<String>() == "two" {
-                v.push(2);
-            }
-            if l.chars().skip(i).take(5).collect::<String>() == "three" {
-                v.push(3);
-            }
-            if l.chars().skip(i).take(4).collect::<String>() == "four" {
-                v.push(4);
-            }
-            if l.chars().skip(i).take(4).collect::<String>() == "five" {
-                v.push(5);
-            }
-            if l.chars().skip(i).take(3).collect::<String>() == "six" {
-                v.push(6);
-            }
-            if l.chars().skip(i).take(5).collect::<String>() == "seven" {
-                v.push(7);
-            }
-            if l.chars().skip(i).take(5).collect::<String>() == "eight" {
-                v.push(8);
-            }
-            if l.chars().skip(i).take(4).collect::<String>() == "nine" {
-                v.push(9);
+            for (str, val) in [
+                ("one", 1),
+                ("two", 2),
+                ("three", 3),
+                ("four", 4),
+                ("five", 5),
+                ("six", 6),
+                ("seven", 7),
+                ("eight", 8),
+                ("nine", 9),
+            ] {
+                if l[i..].starts_with(str) {
+                    v.push(val);
+                    // We can skip a few elements since we know they aren't a digit or another word
+                    for _ in 0..str.len() {
+                        iter.next();
+                    }
+                    break;
+                }
             }
         }
-        s += v[0] * 10 + v.last().unwrap();
+        s += v.first().unwrap() * 10 + v.last().unwrap();
     });
     Some(s)
 }
@@ -69,7 +63,9 @@ mod tests {
 
     #[test]
     fn test_part_two() {
-        let result = part_two(&advent_of_code::template::read_file_part("examples", DAY, 2));
+        let result = part_two(&advent_of_code::template::read_file_part(
+            "examples", DAY, 2,
+        ));
         assert_eq!(result, Some(281));
     }
 }
