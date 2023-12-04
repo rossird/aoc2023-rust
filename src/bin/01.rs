@@ -38,10 +38,6 @@ pub fn part_two(input: &str) -> Option<u32> {
             ] {
                 if l[i..].starts_with(str) {
                     v.push(val);
-                    // We can skip a few elements since we know they aren't a digit or another word
-                    for _ in 0..str.len() {
-                        iter.next();
-                    }
                     break;
                 }
             }
